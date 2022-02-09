@@ -5,6 +5,6 @@
 
 void buttons_init(void);
 void buttons_monitor(void);
-void buttons_proces(void);
+void buttons_process(void);
 
 #endif

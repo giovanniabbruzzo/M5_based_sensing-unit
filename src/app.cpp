@@ -29,6 +29,8 @@ void app_init(void){
     app.aq.alt = 0;
 
     app.displayState = 1;
+
+    app.hapticState = 0;
     
     app.flags.val = 0;
 }

@@ -57,6 +57,7 @@ struct timers_t {
 	volatile uint64_t generalTestTimer;
 	volatile uint64_t bmeReadingTimer;
 	volatile uint64_t displayOffTimer;
+	volatile uint64_t hapticTriggered;
 };
 
 typedef union {
@@ -64,9 +65,10 @@ typedef union {
     struct {
         uint8_t updateDisplay : 2;
 		uint8_t launchOTA : 2;
-		uint8_t setDisplayOff : 2;
+		uint8_t setDisplayOff : 1;
 		uint8_t setDisplayOn : 1;
 		uint8_t readBME : 1;
+		uint8_t haptFlag : 1;
     };
 } app_ctx_flags_t;
 
@@ -89,6 +91,8 @@ struct app_t {
 	air_quality_t aq;
 	// Display
 	uint8_t displayState;
+	// Haptics
+	uint8_t hapticState;
 	// Flags
 	app_ctx_flags_t flags;
 };

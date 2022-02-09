@@ -70,7 +70,9 @@ void loop() {
   display_process();
 
   buttons_monitor();
-  buttons_proces();
+  buttons_process();
+
+  haptics_process();
 
   wdt_reset_hal(); // This should always stay at the bottom
 }

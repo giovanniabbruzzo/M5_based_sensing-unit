@@ -29,18 +29,18 @@ void buttons_monitor(void){
                 if(!app.displayState){
                     app.flags.setDisplayOn = 1;
                 }
-                M5.Axp.SetLDOEnable(3,true);  //Open the vibration
-                delay(100);
-                M5.Axp.SetLDOEnable(3,false);
+                // Enable haptic
+                app.timers.hapticTriggered = millis();
+                app.flags.haptFlag = 1;
                 DEBUG_PRINT("One tap")
                 break;
             case TB_ONE_TAP:
                 if((millis() - bttns.pressedTime) <= TOUCH_BUTOON_DOUBLE_TAP_DEBOUNCE_TIME_MS){
                     bttns.state = TB_DOUBLE_TAP;
                     DEBUG_PRINT("Double tap detected")
-                    M5.Axp.SetLDOEnable(3,true);  //Open the vibration
-                    delay(100);
-                    M5.Axp.SetLDOEnable(3,false);
+                    // Enable haptic
+                    app.timers.hapticTriggered = millis();
+                    app.flags.haptFlag = 1;
                 }
                 else{
                     bttns.state = TB_RELEASED;
@@ -90,9 +90,9 @@ void buttons_monitor(void){
                     if(app.displayState){
                         app.flags.setDisplayOff = 1;
                     }
-                    M5.Axp.SetLDOEnable(3,true);  //Open the vibration
-                    delay(100);
-                    M5.Axp.SetLDOEnable(3,false);
+                    // Enable haptic
+                    app.timers.hapticTriggered = millis();
+                    app.flags.haptFlag = 1;
                 }
                 break;
             default:
@@ -102,7 +102,7 @@ void buttons_monitor(void){
     }
 }
 
-void buttons_proces(void){
+void buttons_process(void){
     if(bttns.process){
         bttns.process = 0;
         DEBUG_PRINT("Long press button recorded")

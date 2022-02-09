@@ -36,4 +36,6 @@
 #include "display.h"
 #include "touch_buttons.h"
 
+#include "haptics.h"
+
 #endif // INCLUDES_H

@@ -29,12 +29,18 @@ void buttons_monitor(void){
                 if(!app.displayState){
                     app.flags.setDisplayOn = 1;
                 }
+                M5.Axp.SetLDOEnable(3,true);  //Open the vibration
+                delay(100);
+                M5.Axp.SetLDOEnable(3,false);
                 DEBUG_PRINT("One tap")
                 break;
             case TB_ONE_TAP:
                 if((millis() - bttns.pressedTime) <= TOUCH_BUTOON_DOUBLE_TAP_DEBOUNCE_TIME_MS){
                     bttns.state = TB_DOUBLE_TAP;
                     DEBUG_PRINT("Double tap detected")
+                    M5.Axp.SetLDOEnable(3,true);  //Open the vibration
+                    delay(100);
+                    M5.Axp.SetLDOEnable(3,false);
                 }
                 else{
                     bttns.state = TB_RELEASED;
@@ -77,12 +83,16 @@ void buttons_monitor(void){
                 break;
             case TB_LONG_PRESSED:
                 if(M5.BtnB.pressedFor(TOUCH_BUTOON_LONG_PRESS_DEBOUNCE_TIME_MS)){
+                    DEBUG_PRINT("Long tap detected")
                     bttns.process = 1;
                     bttns.state = TB_RELEASED;
                     bttns.pressedTime = 0;
                     if(app.displayState){
                         app.flags.setDisplayOff = 1;
                     }
+                    M5.Axp.SetLDOEnable(3,true);  //Open the vibration
+                    delay(100);
+                    M5.Axp.SetLDOEnable(3,false);
                 }
                 break;
             default:

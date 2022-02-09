@@ -91,14 +91,14 @@ void display_process(void){
 void display_monitor(void){
     if(app.flags.setDisplayOn){
         app.flags.setDisplayOn = 0;
-        M5.Lcd.writecommand(ILI9341_DISPON);
-        M5.Lcd.setBrightness(11);
+        M5.Lcd.wakeup();
+        M5.Lcd.setBrightness(20);
         app.displayState = 1;
         app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
     }
     if(app.flags.setDisplayOff){
         app.flags.setDisplayOff = 0;
-        M5.Lcd.writecommand(ILI9341_DISPOFF);
+        M5.Lcd.sleep();
         M5.Lcd.setBrightness(0);
         app.displayState = 0;
     }

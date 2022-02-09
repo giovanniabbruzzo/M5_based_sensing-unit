@@ -31,6 +31,7 @@ void bme_init(void){
     bme.setPressureOversampling(BME680_OS_4X);
     bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
     bme.setGasHeater(320, 150); // 320*C for 150 ms
+    bme.setODR(BME68X_ODR_1000_MS);
 
     bme_init_reading();
 

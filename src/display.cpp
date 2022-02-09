@@ -26,6 +26,16 @@ void display_init(void){
     disp.pushSprite(0, 0);
 }
 
+/**
+ * @brief Clear the display
+ * 
+ */
+void display_clear(void){
+    disp.fillRect(0,0,disp.width(),disp.height(),BG_COLOR1);
+    disp.setCursor(0,0);
+    disp.pushSprite(0, 0);
+}
+
 void display_println(const char *s){
     // Clear
     disp.fillRect(0,0,disp.width(),disp.height(),BG_COLOR1);
@@ -45,20 +55,32 @@ void display_process(void){
         app.flags.updateDisplay = 0;
         // Clear
         disp.fillRect(0,0,disp.width(),disp.height(),BG_COLOR1);
-        disp.setCursor(0,0);
-        // Update
-        disp.printf(
-            "Temp: %1.2f *C\nPres: %u hPa\nHum: %1.2f %\nGas res: %u KOhms\nAltitude: %1.2f m\n",
-            app.aq.temp,
-            app.aq.press,
-            app.aq.hum,
-            app.aq.gas_res,
-            app.aq.alt
-            );
-        disp.print("IP addr: ");
+
+        disp.setCursor(20,20);
+        disp.print("IP: ");
         disp.println(app.WiFiLocalIP);
+
+        disp.setCursor(20,50);
+        disp.print("Temp: ");
+        disp.print(app.aq.temp);
+        disp.println(" *C");
+
+        disp.setCursor(20,80);
+        disp.print("Hum: ");
+        disp.print(app.aq.hum);
+        disp.println(" %");
+
+        disp.setCursor(20,110);
+        disp.print("Gas: ");
+        disp.print(app.aq.gas_res);
+        disp.println(" KOhms");
+
+        disp.setCursor(20,140);
+        disp.print("Press: ");
+        disp.print(app.aq.press);
+        disp.println(" hPa");
+
         disp.pushSprite(0, 0);
-        
     }
 }
 

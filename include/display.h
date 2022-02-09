@@ -22,6 +22,7 @@
 #define TXT_FONT_SIZE 2
 
 void display_init(void);
+void display_clear(void);
 void display_println(const char *s);
 void display_process(void);
 void display_monitor(void);

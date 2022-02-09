@@ -34,5 +34,6 @@
 // M5 Core 2
 #include <M5Core2.h>
 #include "display.h"
+#include "touch_buttons.h"
 
 #endif // INCLUDES_H

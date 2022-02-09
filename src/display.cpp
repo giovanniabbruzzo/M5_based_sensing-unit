@@ -40,7 +40,7 @@ void display_println(const char *s){
  * 
  */
 void display_process(void){
-    if(app.flags.updateDisplay){
+    if(app.flags.updateDisplay && app.displayState){
         MPRINT("Processing display...")
         app.flags.updateDisplay = 0;
         // Clear
@@ -58,6 +58,26 @@ void display_process(void){
         disp.print("IP addr: ");
         disp.println(app.WiFiLocalIP);
         disp.pushSprite(0, 0);
+        
     }
 }
 
+/**
+ * @brief Monitor the display to see if it needs to be turned on or off
+ * 
+ */
+void display_monitor(void){
+    if(app.flags.setDisplayOn){
+        app.flags.setDisplayOn = 0;
+        M5.Lcd.writecommand(ILI9341_DISPON);
+        M5.Lcd.setBrightness(11);
+        app.displayState = 1;
+        app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
+    }
+    if(app.flags.setDisplayOff){
+        app.flags.setDisplayOff = 0;
+        M5.Lcd.writecommand(ILI9341_DISPOFF);
+        M5.Lcd.setBrightness(0);
+        app.displayState = 0;
+    }
+}

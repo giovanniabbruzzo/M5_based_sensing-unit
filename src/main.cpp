@@ -46,7 +46,6 @@ void setup() {
     display_println("Couldn't connect to WiFI, initializing the rest of the sensors...");
   }
   // ... until here
-
   MPRINT("M5 stack init completed")
   // Init BME sensor
   bme_init();
@@ -61,9 +60,14 @@ void setup() {
 void loop() {
   timer_monitor(); // This should always stay at the top
   timer_process(); 
-  display_process();
 
   app_loop();
+  
+  display_monitor();
+  display_process();
+
+  buttons_monitor();
+  buttons_proces();
 
   wdt_reset_hal(); // This should always stay at the bottom
 }
@@ -82,7 +86,12 @@ void loop() {
   #endif
   if(!app.timers.bmeReadingTimer){
     app.timers.bmeReadingTimer = BME_POLLING_PERIOD_MS;
-    MPRINT("Reading BME...")
-    bme_read_data();
+    app.flags.readBME = 1;
+  }
+  if(app.displayState){
+    if(!app.timers.displayOffTimer){
+      app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
+      app.flags.setDisplayOff = 1;
+    }
   }
 }

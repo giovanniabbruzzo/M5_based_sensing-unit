@@ -27,6 +27,8 @@ void app_init(void){
     app.aq.hum = 0;
     app.aq.gas_res = 0;
     app.aq.alt = 0;
+
+    app.displayState = 1;
     
     app.flags.val = 0;
 }
@@ -77,10 +79,16 @@ void app_ota_init(void){
  * 
  */
 void app_loop(void){
-    if(app.flags.launchOTA){
-        app.flags.launchOTA = 0;
-        wdt_config_hal(WDT_VERY_LONG_TIMEOUT);
-        ArduinoOTA.handle();
-        wdt_config_hal(WDT_SHORT_TIMEOUT);
-    }
+  M5.update();
+  if(app.flags.launchOTA){
+      app.flags.launchOTA = 0;
+      wdt_config_hal(WDT_VERY_LONG_TIMEOUT);
+      ArduinoOTA.handle();
+      wdt_config_hal(WDT_SHORT_TIMEOUT);
+  }
+  if(app.flags.readBME){
+    app.flags.readBME = 0;
+    MPRINT("Reading BME...")
+    bme_read_data();
+  }
 }   

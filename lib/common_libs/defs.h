@@ -30,11 +30,24 @@
 #endif
 #define BME_POLLING_PERIOD_MS 5000
 
+#define TOUCH_BUTOON_LONG_PRESS_DEBOUNCE_TIME_MS 5000
+#define TOUCH_BUTOON_DOUBLE_TAP_DEBOUNCE_TIME_MS 500
+#define TOUCH_BUTOON_RELEASE_DEBOUNCE_TIME_MS 100
+
+#define DISPLAY_OFF_TIMEOUT_TIME_MS 5*60*1000
+
 // Define all the enums structures
 typedef enum{
 	OFFLINE,
 	ONLINE
 }online_state_t;
+
+enum touch_button_state_t{
+  TB_RELEASED,
+  TB_ONE_TAP,
+  TB_DOUBLE_TAP,
+  TB_LONG_PRESSED
+};
 
 // Add here all the timers and then init then in timer_init() func
 struct timers_t {
@@ -43,13 +56,17 @@ struct timers_t {
 #endif
 	volatile uint64_t generalTestTimer;
 	volatile uint64_t bmeReadingTimer;
+	volatile uint64_t displayOffTimer;
 };
 
 typedef union {
     uint8_t val;
     struct {
-        uint8_t updateDisplay : 4;
-		uint8_t launchOTA : 4;
+        uint8_t updateDisplay : 2;
+		uint8_t launchOTA : 2;
+		uint8_t setDisplayOff : 2;
+		uint8_t setDisplayOn : 1;
+		uint8_t readBME : 1;
     };
 } app_ctx_flags_t;
 
@@ -66,12 +83,24 @@ struct app_t {
 	uint8_t WiFiOnline;
 	String WiFiMacAddress;
 	String WiFiLocalIP;
-	 timers_t timers;
-	 air_quality_t aq;
-	 app_ctx_flags_t flags;
+	// Timers
+	timers_t timers;
+	// Air quality sensor
+	air_quality_t aq;
+	// Display
+	uint8_t displayState;
+	// Flags
+	app_ctx_flags_t flags;
+};
+
+struct touch_buttons_t{
+  touch_button_state_t state;
+  uint8_t process;
+  unsigned long pressedTime;
 };
 
 // All the extern variables go here
 extern app_t app;
+extern touch_buttons_t bttns;
 
 #endif // DEFS_H

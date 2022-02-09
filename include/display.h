@@ -24,3 +24,4 @@
 void display_init(void);
 void display_println(const char *s);
 void display_process(void);
+void display_monitor(void);

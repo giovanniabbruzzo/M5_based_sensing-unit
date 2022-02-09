@@ -34,6 +34,8 @@ void timer_init(void){
   app.timers.generalTestTimer = 0;
   // BME
   app.timers.bmeReadingTimer = BME_POLLING_PERIOD_MS;
+  // Display off
+  app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
 }
 
 /**
@@ -54,6 +56,9 @@ void timer_monitor(void){
     }
     if(app.timers.bmeReadingTimer){
       app.timers.bmeReadingTimer--;
+    }
+    if(app.timers.displayOffTimer){
+      app.timers.displayOffTimer--;
     }
 
     portEXIT_CRITICAL(&timerMux);

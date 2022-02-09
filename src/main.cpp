@@ -55,6 +55,7 @@ void setup() {
   // Leave the WDT at the end
   wdt_config_hal(WDT_SHORT_TIMEOUT);
   display_println("Initialization succesful!");
+  app.flags.readBME = 1; // Initiate the first sensor reading
 }
 
 void loop() {

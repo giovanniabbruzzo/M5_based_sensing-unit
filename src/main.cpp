@@ -51,6 +51,8 @@ void setup() {
   bme_init();
   MPRINT("BME init completed")
   app_ota_init();
+  server_init();
+  MPRINT("Server init completed")
   
   // Leave the WDT at the end
   wdt_config_hal(WDT_SHORT_TIMEOUT);

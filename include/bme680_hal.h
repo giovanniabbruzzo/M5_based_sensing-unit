@@ -18,7 +18,7 @@
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 #define TEMP_OFFSET -3.5f
-#define HUM_OFFSET 5.5f
+#define HUM_OFFSET 6.5f
 
 void bme_init(void);
 void bme_init_reading(void);

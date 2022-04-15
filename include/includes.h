@@ -39,6 +39,8 @@
 #include "haptics.h"
 // Async Server
 #include "webserver.h"
+// Blynk
+#include "blynk_hal.h"
 
 
 #endif // INCLUDES_H

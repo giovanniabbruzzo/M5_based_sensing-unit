@@ -71,6 +71,7 @@ void bme_read_data(void){
     app.aq.alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
     app.flags.updateDisplay = 1;
+    app.flags.updateBlynk = 1;
 
     MPRINT("Temperature = "+String(app.aq.temp)+" *C")
     MPRINT("Pressure = "+String(app.aq.press)+" hPa")

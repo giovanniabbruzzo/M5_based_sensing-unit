@@ -64,7 +64,8 @@ typedef union {
     uint8_t val;
     struct {
         uint8_t updateDisplay : 2;
-		uint8_t launchOTA : 2;
+		uint8_t updateBlynk :1;
+		uint8_t launchOTA : 1;
 		uint8_t setDisplayOff : 1;
 		uint8_t setDisplayOn : 1;
 		uint8_t readBME : 1;

@@ -58,7 +58,7 @@ void setup() {
   wdt_config_hal(WDT_SHORT_TIMEOUT);
   display_println("Initialization succesful!");
   app.flags.readBME = 1; // Initiate the first sensor reading
-  blynk_init((char*)"FritzenBoxen",(char*)"Gios&newTy8753");
+  blynk_init();
   // Reset display
   display_clear();
 }

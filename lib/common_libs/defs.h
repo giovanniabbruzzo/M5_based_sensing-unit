@@ -104,8 +104,34 @@ struct touch_buttons_t{
   unsigned long pressedTime;
 };
 
+typedef union {
+    uint8_t val;
+    struct {
+        uint8_t ring : 2;
+		uint8_t ringing :1;
+		uint8_t snooze : 1;
+		uint8_t stop : 1;
+		uint8_t set : 1;
+		uint8_t triggered : 1;
+    };
+} alarm_flags_t;
+
+struct hour_min_t{
+	int h;
+	int m;
+};
+
+struct alarm_t{
+	alarm_flags_t flags;
+	String trackName;
+	int pos;
+	hour_min_t alarmClook;
+	unsigned long triggereTime;
+};
+
 // All the extern variables go here
 extern app_t app;
 extern touch_buttons_t bttns;
+extern alarm_t appAlarm;
 
 #endif // DEFS_H

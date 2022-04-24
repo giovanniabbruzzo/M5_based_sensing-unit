@@ -24,7 +24,7 @@ void IRAM_ATTR onTimer(void) {
 void setup() {
   // // Do not modify the following lines ...
   SERIAL_INIT
-  M5.begin(true, false, false, false);
+  M5.begin(true, true, false, false);
   display_init();
   setCpuFrequencyMhz(240);
   MPRINT("Starting initialisation process")
@@ -53,12 +53,18 @@ void setup() {
   app_ota_init();
   server_init();
   MPRINT("Server init completed")
+
+  // Setup alarm
+  alarm_init();
+  MPRINT("Alarm setup completed")
+
+  // Init Blynk
+  blynk_init();
   
   // Leave the WDT at the end
   wdt_config_hal(WDT_SHORT_TIMEOUT);
   display_println("Initialization succesful!");
   app.flags.readBME = 1; // Initiate the first sensor reading
-  blynk_init();
   // Reset display
   display_clear();
 }
@@ -77,6 +83,8 @@ void loop() {
   buttons_process();
 
   haptics_process();
+
+  alarm_process();
 
   wdt_reset_hal(); // This should always stay at the bottom
 }

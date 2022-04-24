@@ -41,6 +41,7 @@
 #include "webserver.h"
 // Blynk
 #include "blynk_hal.h"
-
+// Alarm
+#include "alarm_hal.h"
 
 #endif // INCLUDES_H

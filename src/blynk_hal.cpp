@@ -7,6 +7,9 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
+#include "defs.h"
+
+extern alarm_t appAlarm;
 
 extern app_t app;
 
@@ -18,14 +21,22 @@ BlynkTimer timerBlynk;
 
 void mytimerBlynkEvent(void);
 
-// // This function is called every time the Virtual Pin 0 state changes
-// BLYNK_WRITE(V0){
-//   // Set incoming value from pin V0 to a variable
-//   int value = param.asInt();
+BLYNK_WRITE(V4){
+  appAlarm.flags.set = param.asInt();
+  if(appAlarm.flags.set){
+      MPRINT("Alarm is on")
+  }else{
+      MPRINT("Alarm is off")
+  }
+}
 
-//   // Update state
-//   Blynk.virtualWrite(V1, value);
-// }
+BLYNK_WRITE(V5){  
+  TimeInputParam t(param);
+  MPRINT("Alarm to start at")
+  appAlarm.alarmClook.h = t.getStartHour();
+  appAlarm.alarmClook.m = t.getStartMinute();
+  MPRINT(String(appAlarm.alarmClook.h )+":"+String(appAlarm.alarmClook.m))
+}
 
 // This function sends Arduino's uptime every second to Virtual Pin 2.
 void mytimerBlynkEvent(void){
@@ -43,11 +54,15 @@ void blynk_init(void){
 
   // Setup a function to be called every second
   timerBlynk.setInterval(1000L, mytimerBlynkEvent);
+  Blynk.virtualWrite(V4, 0);
 }
 
 void blynk_loop(void){
-  Blynk.run();
-  timerBlynk.run();
+  if(!Blynk.connected()){
+    Blynk.connect();
+  }
+    Blynk.run();
+    timerBlynk.run();
   if(app.flags.updateBlynk){
     MPRINT("Sending data to Blynk...")
     app.flags.updateBlynk = 0;

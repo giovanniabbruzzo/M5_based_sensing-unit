@@ -15,3 +15,8 @@ bool wifi_hal_handle_connect(const char* ap_ssid, const char* ap_psk){
     manager.setConnectTimeout(CONN_TIMEOUT);
     return manager.autoConnect(ap_ssid, ap_psk);
 }
+
+online_state_t wifi_check_connection_status(void){
+    //TODO 
+    delay(1);
+}

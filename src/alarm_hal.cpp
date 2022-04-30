@@ -13,15 +13,14 @@ AudioFileSourceSD *file;
 AudioOutputI2S *out;
 AudioFileSourceID3 *id3;
 
+extern app_t app;
+
 #define OUTPUT_GAIN 300
 
 const char* ntpServer = "europe.pool.ntp.org";
 const long  gmtOffset_sec = 0;
 const int   daylightOffset_sec = 3600;
 
-alarm_t appAlarm;
-// Udate current time every 1 second
-date_time_t currDateTime;
 unsigned long int timeUpdated = millis();
 
 char* strToChar(String str) {
@@ -45,115 +44,115 @@ void update_time(void){
         timeUpdated = millis();
         struct tm timeinfo;
         if(getLocalTime(&timeinfo)){ 
-            currDateTime.h = timeinfo.tm_hour;
-            currDateTime.m = timeinfo.tm_min;
-            currDateTime.mDay = timeinfo.tm_mday;
-            currDateTime.wDay = timeinfo.tm_wday;
-            currDateTime.month = timeinfo.tm_mon + 1;
-            currDateTime.year = 1900+timeinfo.tm_year;
+            app.clock.h = timeinfo.tm_hour;
+            app.clock.m = timeinfo.tm_min;
+            app.clock.mDay = timeinfo.tm_mday;
+            app.clock.wDay = timeinfo.tm_wday;
+            app.clock.month = timeinfo.tm_mon + 1;
+            app.clock.year = 1900+timeinfo.tm_year;
             // MPRINT("Current time:")
-            // MPRINT(String(currDateTime.h)+":"+String(currDateTime.m))
+            // MPRINT(String(app.clock.h)+":"+String(app.clock.m))
         }
     }
 }
 
 void getStringDate(void){
-    switch (currDateTime.wDay) {
+    switch (app.clock.wDay) {
         case 1:
-            currDateTime.dateString = "Mon, ";
+            app.clock.dateString = "Mon, ";
             break;
         case 2:
-            currDateTime.dateString = "Tue, ";
+            app.clock.dateString = "Tue, ";
             break;
         case 3:
-            currDateTime.dateString = "Wed, ";
+            app.clock.dateString = "Wed, ";
             break;
         case 4:
-            currDateTime.dateString = "Thu, ";
+            app.clock.dateString = "Thu, ";
             break;
         case 5:
-            currDateTime.dateString = "Fri, ";
+            app.clock.dateString = "Fri, ";
             break;
         case 6:
-            currDateTime.dateString = "Sat, ";
+            app.clock.dateString = "Sat, ";
             break;
         case 7:
-            currDateTime.dateString = "Sun, ";
+            app.clock.dateString = "Sun, ";
             break;        
         default:
-            currDateTime.dateString = "Sun, ";
+            app.clock.dateString = "Sun, ";
             break;
     }
-    if(currDateTime.mDay < 10){
-        currDateTime.dateString += "0"+String(currDateTime.mDay)+"-";
+    if(app.clock.mDay < 10){
+        app.clock.dateString += "0"+String(app.clock.mDay)+"-";
     }else{
-        currDateTime.dateString += String(currDateTime.mDay)+"-";
+        app.clock.dateString += String(app.clock.mDay)+"-";
     }
     String mmth;
-    switch(currDateTime.month){
+    switch(app.clock.month){
         case 1:
-            currDateTime.dateString += "Jan";
+            app.clock.dateString += "Jan";
             break;
         case 2:
-            currDateTime.dateString += "Feb";
+            app.clock.dateString += "Feb";
             break;
         case 3:
-            currDateTime.dateString += "Mar";
+            app.clock.dateString += "Mar";
             break;
         case 4:
-            currDateTime.dateString += "Apr";
+            app.clock.dateString += "Apr";
             break;
         case 5:
-            currDateTime.dateString += "May";
+            app.clock.dateString += "May";
             break;
         case 6:
-            currDateTime.dateString += "Jun";
+            app.clock.dateString += "Jun";
             break;
         case 7:
-            currDateTime.dateString += "Jul";
+            app.clock.dateString += "Jul";
             break;
         case 8:
-            currDateTime.dateString += "Aug";
+            app.clock.dateString += "Aug";
             break;
         case 9:
-            currDateTime.dateString += "Sep";
+            app.clock.dateString += "Sep";
             break;
         case 10:
-            currDateTime.dateString += "Oct";
+            app.clock.dateString += "Oct";
             break;
         case 11:
-            currDateTime.dateString += "Nov";
+            app.clock.dateString += "Nov";
             break;
         case 12:
-            currDateTime.dateString += "Dec";
+            app.clock.dateString += "Dec";
             break;
         default:
-            currDateTime.dateString += "Jan";
+            app.clock.dateString += "Jan";
             break;
     }
-    currDateTime.dateString += "-"+String(currDateTime.year);
+    app.clock.dateString += "-"+String(app.clock.year);
 }
 
 void getStringTime(void){
-    if(currDateTime.h < 10){
-        currDateTime.timeString = "0"+String(currDateTime.h)+":";
+    if(app.clock.h < 10){
+        app.clock.timeString = "0"+String(app.clock.h)+":";
     }else{
-        currDateTime.timeString = String(currDateTime.h)+":";
+        app.clock.timeString = String(app.clock.h)+":";
     }
-    if(currDateTime.m < 10){
-        currDateTime.timeString += "0"+String(currDateTime.m);
+    if(app.clock.m < 10){
+        app.clock.timeString += "0"+String(app.clock.m);
     }else{
-        currDateTime.timeString += String(currDateTime.m);
+        app.clock.timeString += String(app.clock.m);
     }
 }
 
 void alarm_init(void){
-    appAlarm.flags.val = 0;
-    appAlarm.trackName = "/track1.mp3";
-    appAlarm.pos = 0;
-    appAlarm.triggereTime = 0;
-    appAlarm.alarmClook.h = 0;
-    appAlarm.alarmClook.m = 0;
+    app.alarm.flags.val = 0;
+    app.alarm.trackName = "/track1.mp3";
+    app.alarm.pos = 0;
+    app.alarm.triggereTime = 0;
+    app.alarm.alarmClock.h = 0;
+    app.alarm.alarmClock.m = 0;
    
     M5.Axp.SetSpkEnable(true);   
 
@@ -178,7 +177,7 @@ void alarm_start(void){
     mp3 = NULL;
     file = NULL;
     out = NULL;
-    file = new AudioFileSourceSD(strToChar(appAlarm.trackName));
+    file = new AudioFileSourceSD(strToChar(app.alarm.trackName));
     id3 = new AudioFileSourceID3(file);
     out = new AudioOutputI2S(0, 0); // Output to builtInDAC
     out->SetPinout(12, 0, 2);
@@ -193,38 +192,38 @@ void alarm_stop(void){
 }
 
 uint8_t alarm_do_ring(void){
-    if(((currDateTime.h == appAlarm.alarmClook.h) && (currDateTime.m == appAlarm.alarmClook.m) && !appAlarm.flags.triggered)){
-        appAlarm.flags.triggered = 1;
-        appAlarm.triggereTime = millis();
+    if(((app.clock.h == app.alarm.alarmClock.h) && (app.clock.m == app.alarm.alarmClock.m) && !app.alarm.flags.triggered)){
+        app.alarm.flags.triggered = 1;
+        app.alarm.triggereTime = millis();
         MPRINT("Trigger alarm")
         return 1;
-    }else if(appAlarm.flags.triggered){
-        if((millis() - appAlarm.triggereTime) > 61000){
-            appAlarm.flags.triggered = 0;
-            appAlarm.triggereTime = millis();
+    }else if(app.alarm.flags.triggered){
+        if((millis() - app.alarm.triggereTime) > 61000){
+            app.alarm.flags.triggered = 0;
+            app.alarm.triggereTime = millis();
         }
     }
     return 0;
 }
 
 void alarm_process(void){
-    if(appAlarm.flags.set){
+    if(app.alarm.flags.set){
         if(alarm_do_ring()){
-            appAlarm.flags.ring = 1;
+            app.alarm.flags.ring = 1;
         }
     }
-    if(appAlarm.flags.ring){
-        appAlarm.flags.ring = 0;
-        appAlarm.flags.ringing = 1;
+    if(app.alarm.flags.ring){
+        app.alarm.flags.ring = 0;
+        app.alarm.flags.ringing = 1;
         alarm_start();
-    }else if(appAlarm.flags.stop){
-        appAlarm.flags.stop = 0;
-        appAlarm.flags.ringing = 0;
+    }else if(app.alarm.flags.stop){
+        app.alarm.flags.stop = 0;
+        app.alarm.flags.ringing = 0;
         alarm_stop();
     }
     if (mp3->isRunning()) {
         if (!mp3->loop()) mp3->stop();
-    }else if (appAlarm.flags.ringing){
+    }else if (app.alarm.flags.ringing){
         alarm_start();
     }
     update_time();

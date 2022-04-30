@@ -13,7 +13,7 @@
 #include "includes.h"
 
 touch_buttons_t bttns;
-extern alarm_t appAlarm;
+extern app_t app;
 
 void buttons_init(void){
     bttns.state = TB_RELEASED;
@@ -103,11 +103,11 @@ void buttons_monitor(void){
     }
     if (M5.BtnA.wasPressed()){
         MPRINT("Trigger alarm")
-        appAlarm.flags.ring = 1;
+        app.alarm.flags.ring = 1;
     }
     if (M5.BtnC.wasPressed()){
         MPRINT("Snooze alarm")
-        appAlarm.flags.snooze = 0;
+        app.alarm.flags.snooze = 0;
     }        
 }
 
@@ -115,6 +115,6 @@ void buttons_process(void){
     if(bttns.process){
         bttns.process = 0;
         DEBUG_PRINT("Long press button recorded")
-        appAlarm.flags.stop = 1;
+        app.alarm.flags.stop = 1;
     }
 }

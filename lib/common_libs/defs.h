@@ -82,29 +82,6 @@ struct air_quality_t{
 	float alt;
 };
 
-struct app_t {
-	// WiFi information
-	uint8_t WiFiOnline;
-	String WiFiMacAddress;
-	String WiFiLocalIP;
-	// Timers
-	timers_t timers;
-	// Air quality sensor
-	air_quality_t aq;
-	// Display
-	uint8_t displayState;
-	// Haptics
-	uint8_t hapticState;
-	// Flags
-	app_ctx_flags_t flags;
-};
-
-struct touch_buttons_t{
-  touch_button_state_t state;
-  uint8_t process;
-  unsigned long pressedTime;
-};
-
 typedef union {
     uint8_t val;
     struct {
@@ -132,14 +109,37 @@ struct alarm_t{
 	alarm_flags_t flags;
 	String trackName;
 	int pos;
-	date_time_t alarmClook;
+	date_time_t alarmClock;
 	unsigned long triggereTime;
+};
+
+struct app_t {
+	// WiFi information
+	uint8_t WiFiOnline;
+	String WiFiMacAddress;
+	String WiFiLocalIP;
+	// Timers
+	timers_t timers;
+	// Air quality sensor
+	air_quality_t aq;
+	// Display
+	uint8_t displayState;
+	// Haptics
+	uint8_t hapticState;
+	// Flags
+	app_ctx_flags_t flags;
+	alarm_t alarm;
+	date_time_t clock;
+};
+
+struct touch_buttons_t{
+  touch_button_state_t state;
+  uint8_t process;
+  unsigned long pressedTime;
 };
 
 // All the extern variables go here
 extern app_t app;
 extern touch_buttons_t bttns;
-extern alarm_t appAlarm;
-extern date_time_t currDateTime;
 
 #endif // DEFS_H

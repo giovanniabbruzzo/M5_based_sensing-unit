@@ -8,8 +8,7 @@
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
 #include "defs.h"
-
-extern alarm_t appAlarm;
+#include "eeprom_hal.h"
 
 extern app_t app;
 
@@ -17,33 +16,25 @@ char auth[] = BLYNK_AUTH_TOKEN;
 char* ssid = SSID_BLYNK;
 char* pass = PSK_BLYNK;
 
-BlynkTimer timerBlynk;
-
-void mytimerBlynkEvent(void);
-
 BLYNK_WRITE(V4){
-  appAlarm.flags.set = param.asInt();
+  app.alarm.flags.set = param.asInt();
   app.flags.updateDisplay = 1;
-  if(appAlarm.flags.set){
+  if(app.alarm.flags.set){
       MPRINT("Alarm is on")
   }else{
       MPRINT("Alarm is off")
   }
+  eeprom_store_alarm_data();
 }
 
 BLYNK_WRITE(V5){  
   TimeInputParam t(param);
   MPRINT("Alarm to start at")
-  appAlarm.alarmClook.h = t.getStartHour();
-  appAlarm.alarmClook.m = t.getStartMinute();
-  MPRINT(String(appAlarm.alarmClook.h )+":"+String(appAlarm.alarmClook.m))
-}
-
-// This function sends Arduino's uptime every second to Virtual Pin 2.
-void mytimerBlynkEvent(void){
-  // You can send any value at any time.
-  // Please don't send more that 10 values per second.
-  Blynk.virtualWrite(V3, millis() / 1000);
+  app.alarm.alarmClock.h = t.getStartHour();
+  app.alarm.alarmClock.m = t.getStartMinute();
+  app.flags.updateDisplay = 1;
+  eeprom_store_alarm_data();
+  MPRINT(String(app.alarm.alarmClock.h)+":"+String(app.alarm.alarmClock.m))
 }
 
 void blynk_init(void){
@@ -52,25 +43,25 @@ void blynk_init(void){
   // You can also specify server:
   //Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
   //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
-
-  // // Setup a function to be called every second
-  // timerBlynk.setInterval(1000L, mytimerBlynkEvent);
-  Blynk.virtualWrite(V4, 0);
-  Blynk.virtualWrite(V5,0);
+  eeprom_recover_alarm_data();
+  Blynk.virtualWrite(V4, app.alarm.flags.set);
+  Blynk.virtualWrite(V5, 0);
 }
 
 void blynk_loop(void){
-  if(!Blynk.connected()){
-    Blynk.connect();
-  }
-    Blynk.run();
-    timerBlynk.run();
-  if(app.flags.updateBlynk){
-    MPRINT("Sending data to Blynk...")
-    app.flags.updateBlynk = 0;
-    Blynk.virtualWrite(V0, app.aq.temp);
-    Blynk.virtualWrite(V1, app.aq.hum);
-    Blynk.virtualWrite(V2, app.aq.gas_res);
-    mytimerBlynkEvent();
+  if(app.WiFiOnline == ONLINE){
+    if(!Blynk.connected()){
+      Blynk.connect();
+    }
+      Blynk.run();
+    if(app.flags.updateBlynk){
+      MPRINT("Sending data to Blynk...")
+      app.flags.updateBlynk = 0;
+      Blynk.virtualWrite(V0, app.aq.temp);
+      Blynk.virtualWrite(V1, app.aq.hum);
+      Blynk.virtualWrite(V2, app.aq.gas_res);
+      Blynk.virtualWrite(V6, app.WiFiLocalIP);
+      Blynk.virtualWrite(V3, millis() / 1000);
+    }
   }
 }

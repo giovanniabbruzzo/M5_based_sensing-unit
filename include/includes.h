@@ -43,5 +43,7 @@
 #include "blynk_hal.h"
 // Alarm
 #include "alarm_hal.h"
+// EEPROM
+#include "eeprom_hal.h"
 
 #endif // INCLUDES_H

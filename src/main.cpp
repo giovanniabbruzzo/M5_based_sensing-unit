@@ -49,17 +49,20 @@ void setup() {
   MPRINT("M5 stack init completed")
   // Init BME sensor
   bme_init();
+  eeprom_init();
   MPRINT("BME init completed")
-  app_ota_init();
-  server_init();
-  MPRINT("Server init completed")
+  if(app.WiFiOnline == ONLINE){
+    app_ota_init();
+    server_init();
+    MPRINT("Server init completed")
 
-  // Setup alarm
-  alarm_init();
-  MPRINT("Alarm setup completed")
+    // Setup alarm
+    alarm_init();
+    MPRINT("Alarm setup completed")
 
-  // Init Blynk
-  blynk_init();
+    // Init Blynk
+    blynk_init();
+  }
   
   // Leave the WDT at the end
   wdt_config_hal(WDT_SHORT_TIMEOUT);
@@ -68,6 +71,7 @@ void setup() {
   // Reset display
   display_clear();
   update_time();
+  eeprom_recover_alarm_data();
 }
 
 void loop() {

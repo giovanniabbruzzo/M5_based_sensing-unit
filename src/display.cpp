@@ -12,7 +12,7 @@
 #include "debug_utils.h"
 #include "alarm_hal.h"
 
-extern date_time_t currDateTime;
+extern app_t app;
 
 TFT_eSprite disp(&M5.Lcd);
 
@@ -56,6 +56,11 @@ void display_println(const char *s){
  */
 void display_process(void){
     if(app.flags.updateDisplay && app.displayState){
+        if((app.clock.h < 7) && !app.flags.displayAutoTurnOffFlag){
+            app.flags.displayAutoTurnOffFlag = 1;
+            app.flags.setDisplayOff = 1;
+            return;
+        }
         MPRINT("Processing display...")
         app.flags.updateDisplay = 0;
         // Clear
@@ -95,29 +100,32 @@ void display_process(void){
         getStringDate();
         getStringTime();
         disp.setCursor(20,100);
-        disp.print(currDateTime.dateString);
+        disp.print(app.clock.dateString);
         disp.setCursor(20,125);
-        if(appAlarm.flags.set){
+        if(app.alarm.flags.set){
             String alarmTime;
-            if(appAlarm.alarmClook.h < 10){
-                alarmTime = "0"+String(appAlarm.alarmClook.h)+":";
+            if(app.alarm.alarmClock.h < 10){
+                alarmTime = "0"+String(app.alarm.alarmClock.h)+":";
             }else{
-                alarmTime = String(appAlarm.alarmClook.h)+":";
+                alarmTime = String(app.alarm.alarmClock.h)+":";
             }
-            if(appAlarm.alarmClook.m < 10){
-                alarmTime += "0"+String(appAlarm.alarmClook.m);
+            if(app.alarm.alarmClock.m < 10){
+                alarmTime += "0"+String(app.alarm.alarmClock.m);
             }else{
-                alarmTime += String(appAlarm.alarmClook.m);
+                alarmTime += String(app.alarm.alarmClock.m);
             }
             disp.printf("Alarm set @ %s",alarmTime);
         }else{
-            disp.print("Alarm not set!");
+            disp.print("No alarm set!");
         }
         disp.setTextSize(7);
         disp.setCursor(60,165);
-        disp.print(currDateTime.timeString);
+        disp.print(app.clock.timeString);
 
         disp.pushSprite(0, 0);
+    }else if (!app.displayState && (app.clock.h >= 7)){
+        app.flags.displayAutoTurnOffFlag = 0;
+        app.flags.setDisplayOn = 1;
     }
 }
 

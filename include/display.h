@@ -13,11 +13,14 @@
 
 #define TXT_COLOR LIGHTGREY
 // Used for the visualization of the gas data
-#define BG_COLOR1 DARKGREY
+#define BG_COLOR1 DARKGREEN
 // Used for the visualization of the accelerometer data
 #define BG_COLOR2 BLUE
 // Used for the visualization of the buttons
 #define BG_COLOR3 WHITE
+
+// Color of the clock display
+#define BG_CLOCK BLACK
 
 #define TXT_FONT_SIZE 2
 

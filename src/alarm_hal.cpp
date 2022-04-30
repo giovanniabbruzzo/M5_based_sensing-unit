@@ -13,7 +13,7 @@ AudioFileSourceSD *file;
 AudioOutputI2S *out;
 AudioFileSourceID3 *id3;
 
-#define OUTPUT_GAIN 100
+#define OUTPUT_GAIN 300
 
 const char* ntpServer = "europe.pool.ntp.org";
 const long  gmtOffset_sec = 0;
@@ -21,9 +21,8 @@ const int   daylightOffset_sec = 3600;
 
 alarm_t appAlarm;
 // Udate current time every 1 second
-hour_min_t currTime;
+date_time_t currDateTime;
 unsigned long int timeUpdated = millis();
-
 
 char* strToChar(String str) {
   int len = str.length() + 1;
@@ -46,11 +45,105 @@ void update_time(void){
         timeUpdated = millis();
         struct tm timeinfo;
         if(getLocalTime(&timeinfo)){ 
-            currTime.h = timeinfo.tm_hour;
-            currTime.m = timeinfo.tm_min;
+            currDateTime.h = timeinfo.tm_hour;
+            currDateTime.m = timeinfo.tm_min;
+            currDateTime.mDay = timeinfo.tm_mday;
+            currDateTime.wDay = timeinfo.tm_wday;
+            currDateTime.month = timeinfo.tm_mon + 1;
+            currDateTime.year = 1900+timeinfo.tm_year;
             // MPRINT("Current time:")
-            // MPRINT(String(currTime.h)+":"+String(currTime.m))
+            // MPRINT(String(currDateTime.h)+":"+String(currDateTime.m))
         }
+    }
+}
+
+void getStringDate(void){
+    switch (currDateTime.wDay) {
+        case 1:
+            currDateTime.dateString = "Mon, ";
+            break;
+        case 2:
+            currDateTime.dateString = "Tue, ";
+            break;
+        case 3:
+            currDateTime.dateString = "Wed, ";
+            break;
+        case 4:
+            currDateTime.dateString = "Thu, ";
+            break;
+        case 5:
+            currDateTime.dateString = "Fri, ";
+            break;
+        case 6:
+            currDateTime.dateString = "Sat, ";
+            break;
+        case 7:
+            currDateTime.dateString = "Sun, ";
+            break;        
+        default:
+            currDateTime.dateString = "Sun, ";
+            break;
+    }
+    if(currDateTime.mDay < 10){
+        currDateTime.dateString += "0"+String(currDateTime.mDay)+"-";
+    }else{
+        currDateTime.dateString += String(currDateTime.mDay)+"-";
+    }
+    String mmth;
+    switch(currDateTime.month){
+        case 1:
+            currDateTime.dateString += "Jan";
+            break;
+        case 2:
+            currDateTime.dateString += "Feb";
+            break;
+        case 3:
+            currDateTime.dateString += "Mar";
+            break;
+        case 4:
+            currDateTime.dateString += "Apr";
+            break;
+        case 5:
+            currDateTime.dateString += "May";
+            break;
+        case 6:
+            currDateTime.dateString += "Jun";
+            break;
+        case 7:
+            currDateTime.dateString += "Jul";
+            break;
+        case 8:
+            currDateTime.dateString += "Aug";
+            break;
+        case 9:
+            currDateTime.dateString += "Sep";
+            break;
+        case 10:
+            currDateTime.dateString += "Oct";
+            break;
+        case 11:
+            currDateTime.dateString += "Nov";
+            break;
+        case 12:
+            currDateTime.dateString += "Dec";
+            break;
+        default:
+            currDateTime.dateString += "Jan";
+            break;
+    }
+    currDateTime.dateString += "-"+String(currDateTime.year);
+}
+
+void getStringTime(void){
+    if(currDateTime.h < 10){
+        currDateTime.timeString = "0"+String(currDateTime.h)+":";
+    }else{
+        currDateTime.timeString = String(currDateTime.h)+":";
+    }
+    if(currDateTime.m < 10){
+        currDateTime.timeString += "0"+String(currDateTime.m);
+    }else{
+        currDateTime.timeString += String(currDateTime.m);
     }
 }
 
@@ -100,7 +193,7 @@ void alarm_stop(void){
 }
 
 uint8_t alarm_do_ring(void){
-    if(((currTime.h == appAlarm.alarmClook.h) && (currTime.m == appAlarm.alarmClook.m) && !appAlarm.flags.triggered)){
+    if(((currDateTime.h == appAlarm.alarmClook.h) && (currDateTime.m == appAlarm.alarmClook.m) && !appAlarm.flags.triggered)){
         appAlarm.flags.triggered = 1;
         appAlarm.triggereTime = millis();
         MPRINT("Trigger alarm")

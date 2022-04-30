@@ -67,6 +67,7 @@ void setup() {
   app.flags.readBME = 1; // Initiate the first sensor reading
   // Reset display
   display_clear();
+  update_time();
 }
 
 void loop() {
@@ -105,7 +106,7 @@ void loop() {
     app.timers.bmeReadingTimer = BME_POLLING_PERIOD_MS;
     app.flags.readBME = 1;
   }
-  if(app.displayState){
+  if(app.displayState && app.flags.displayAutoTurnOffFlag){
     if(!app.timers.displayOffTimer){
       app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
       app.flags.setDisplayOff = 1;

@@ -63,13 +63,14 @@ struct timers_t {
 typedef union {
     uint8_t val;
     struct {
-        uint8_t updateDisplay : 2;
+        uint8_t updateDisplay : 1;
 		uint8_t updateBlynk :1;
 		uint8_t launchOTA : 1;
 		uint8_t setDisplayOff : 1;
 		uint8_t setDisplayOn : 1;
 		uint8_t readBME : 1;
 		uint8_t haptFlag : 1;
+		uint8_t displayAutoTurnOffFlag : 1;
     };
 } app_ctx_flags_t;
 
@@ -116,16 +117,22 @@ typedef union {
     };
 } alarm_flags_t;
 
-struct hour_min_t{
+struct date_time_t{
 	int h;
 	int m;
+	int mDay;
+	int year;
+	int month;
+	int wDay;
+	String dateString;
+	String timeString;
 };
 
 struct alarm_t{
 	alarm_flags_t flags;
 	String trackName;
 	int pos;
-	hour_min_t alarmClook;
+	date_time_t alarmClook;
 	unsigned long triggereTime;
 };
 
@@ -133,5 +140,6 @@ struct alarm_t{
 extern app_t app;
 extern touch_buttons_t bttns;
 extern alarm_t appAlarm;
+extern date_time_t currDateTime;
 
 #endif // DEFS_H

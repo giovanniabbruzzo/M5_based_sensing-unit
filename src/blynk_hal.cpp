@@ -23,6 +23,7 @@ void mytimerBlynkEvent(void);
 
 BLYNK_WRITE(V4){
   appAlarm.flags.set = param.asInt();
+  app.flags.updateDisplay = 1;
   if(appAlarm.flags.set){
       MPRINT("Alarm is on")
   }else{
@@ -52,9 +53,10 @@ void blynk_init(void){
   //Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
   //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
 
-  // Setup a function to be called every second
-  timerBlynk.setInterval(1000L, mytimerBlynkEvent);
+  // // Setup a function to be called every second
+  // timerBlynk.setInterval(1000L, mytimerBlynkEvent);
   Blynk.virtualWrite(V4, 0);
+  Blynk.virtualWrite(V5,0);
 }
 
 void blynk_loop(void){
@@ -69,5 +71,6 @@ void blynk_loop(void){
     Blynk.virtualWrite(V0, app.aq.temp);
     Blynk.virtualWrite(V1, app.aq.hum);
     Blynk.virtualWrite(V2, app.aq.gas_res);
+    mytimerBlynkEvent();
   }
 }

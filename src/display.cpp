@@ -10,6 +10,9 @@
  */
 #include "display.h"
 #include "debug_utils.h"
+#include "alarm_hal.h"
+
+extern date_time_t currDateTime;
 
 TFT_eSprite disp(&M5.Lcd);
 
@@ -24,6 +27,8 @@ void display_init(void){
     disp.setTextSize(TXT_FONT_SIZE);
     disp.setCursor(0, 0);
     disp.pushSprite(0, 0);
+
+    MPRINT("Display width: "+String(disp.width())+", display height: "+String(disp.height()))
 }
 
 /**
@@ -55,30 +60,62 @@ void display_process(void){
         app.flags.updateDisplay = 0;
         // Clear
         disp.fillRect(0,0,disp.width(),disp.height(),BG_COLOR1);
+        // Design the UI
+        // Sensor data
+        disp.fillRect(10,10,80,70,BG_CLOCK);
+        disp.fillRect(120,10,80,70,BG_CLOCK);
+        disp.fillRect(230,10,80,70,BG_CLOCK);
+        // Clock data
+        disp.fillRect(10,90,(disp.width()-20),(disp.height()-100),BG_CLOCK);
 
-        disp.setCursor(20,20);
-        disp.print("IP: ");
-        disp.println(app.WiFiLocalIP);
-
-        disp.setCursor(20,50);
+        // Update data
+        disp.setTextSize(TXT_FONT_SIZE);
+        disp.setCursor(15,15);
         disp.print("Temp: ");
+        disp.setCursor(15,35);
         disp.print(app.aq.temp);
-        disp.println(" *C");
+        disp.setCursor(15,55);
+        disp.println("*C");
 
-        disp.setCursor(20,80);
+        disp.setCursor(125,15);
         disp.print("Hum: ");
+        disp.setCursor(125,35);
         disp.print(app.aq.hum);
-        disp.println(" %");
+        disp.setCursor(125,55);
+        disp.println("%");
 
-        disp.setCursor(20,110);
+        disp.setCursor(235,15);
         disp.print("Gas: ");
+        disp.setCursor(235,35);
         disp.print(app.aq.gas_res);
-        disp.println(" KOhms");
+        disp.setCursor(235,55);
+        disp.println("KOhms");
 
-        disp.setCursor(20,140);
-        disp.print("Press: ");
-        disp.print(app.aq.press);
-        disp.println(" hPa");
+        // Update clock
+        getStringDate();
+        getStringTime();
+        disp.setCursor(20,100);
+        disp.print(currDateTime.dateString);
+        disp.setCursor(20,125);
+        if(appAlarm.flags.set){
+            String alarmTime;
+            if(appAlarm.alarmClook.h < 10){
+                alarmTime = "0"+String(appAlarm.alarmClook.h)+":";
+            }else{
+                alarmTime = String(appAlarm.alarmClook.h)+":";
+            }
+            if(appAlarm.alarmClook.m < 10){
+                alarmTime += "0"+String(appAlarm.alarmClook.m);
+            }else{
+                alarmTime += String(appAlarm.alarmClook.m);
+            }
+            disp.printf("Alarm set @ %s",alarmTime);
+        }else{
+            disp.print("Alarm not set!");
+        }
+        disp.setTextSize(7);
+        disp.setCursor(60,165);
+        disp.print(currDateTime.timeString);
 
         disp.pushSprite(0, 0);
     }

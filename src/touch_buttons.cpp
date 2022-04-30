@@ -42,6 +42,10 @@ void buttons_monitor(void){
                     // Enable haptic
                     app.timers.hapticTriggered = millis();
                     app.flags.haptFlag = 1;
+                    bttns.pressedTime = 0;
+                    if(app.displayState){
+                        app.flags.setDisplayOff = 1;
+                    }
                 }
                 else{
                     bttns.state = TB_RELEASED;
@@ -87,10 +91,6 @@ void buttons_monitor(void){
                     DEBUG_PRINT("Long tap detected")
                     bttns.process = 1;
                     bttns.state = TB_RELEASED;
-                    bttns.pressedTime = 0;
-                    if(app.displayState){
-                        app.flags.setDisplayOff = 1;
-                    }
                     // Enable haptic
                     app.timers.hapticTriggered = millis();
                     app.flags.haptFlag = 1;

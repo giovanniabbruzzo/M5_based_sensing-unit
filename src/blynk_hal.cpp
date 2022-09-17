@@ -9,12 +9,9 @@
 #include <BlynkSimpleEsp32.h>
 #include "defs.h"
 #include "eeprom_hal.h"
+#include <string.h>
 
 extern app_t app;
-
-char auth[] = BLYNK_AUTH_TOKEN;
-char* ssid = SSID_BLYNK;
-char* pass = PSK_BLYNK;
 
 BLYNK_WRITE(V4){
   app.alarm.flags.set = param.asInt();
@@ -38,6 +35,14 @@ BLYNK_WRITE(V5){
 }
 
 void blynk_init(void){
+  char auth[strlen(BLYNK_AUTH_TOKEN)+1];
+  char ssid[strlen(SSID_BLYNK)+1];
+  char pass[strlen(PSK_BLYNK)+1];
+
+  memcpy(auth,BLYNK_AUTH_TOKEN,strlen(BLYNK_AUTH_TOKEN)+1);
+  memcpy(ssid,SSID_BLYNK,strlen(SSID_BLYNK)+1);
+  memcpy(pass,PSK_BLYNK,strlen(PSK_BLYNK)+1);
+
   Blynk.begin(auth, ssid, pass);
 
   // You can also specify server:

@@ -23,6 +23,40 @@ const int   daylightOffset_sec = 3600;
 
 unsigned long int timeUpdated = millis();
 
+RTC_TimeTypeDef RTCtime;
+RTC_DateTypeDef RTCDate;
+
+uint8_t setupTimeRTC(){
+    struct tm timeinfo;
+    if(getLocalTime(&timeinfo)){ 
+        app.clock.h = timeinfo.tm_hour;
+        app.clock.m = timeinfo.tm_min;
+        app.clock.mDay = timeinfo.tm_mday;
+        app.clock.wDay = timeinfo.tm_wday;
+        app.clock.month = timeinfo.tm_mon + 1;
+        app.clock.year = 1900+timeinfo.tm_year;
+        // MPRINT("Current time:")
+        // MPRINT(String(app.clock.h)+":"+String(app.clock.m))
+        RTCtime.Hours = app.clock.h; //Set the time
+        RTCtime.Minutes = app.clock.m;
+        RTCtime.Seconds = timeinfo.tm_sec;
+        M5.Rtc.SetTime(&RTCtime); //and writes the set time to the real time clock.  并将设置的时间写入实时时钟
+
+        RTCDate.Year = app.clock.year;  
+        RTCDate.Month = app.clock.month;
+        RTCDate.Date = app.clock.mDay;
+        RTCDate.WeekDay = app.clock.wDay;
+        M5.Rtc.SetDate(&RTCDate);
+        return 1;
+    }
+    return 0;
+}
+
+void flushTime(){
+    M5.Rtc.GetTime(&RTCtime); 
+    M5.Rtc.GetDate(&RTCDate);
+}
+
 char* strToChar(String str) {
   int len = str.length() + 1;
   char* buf = new char[len];
@@ -42,16 +76,18 @@ void printLocalTime(){
 void update_time(void){
     if((millis() - timeUpdated) > 1000){
         timeUpdated = millis();
-        struct tm timeinfo;
-        if(getLocalTime(&timeinfo)){ 
-            app.clock.h = timeinfo.tm_hour;
-            app.clock.m = timeinfo.tm_min;
-            app.clock.mDay = timeinfo.tm_mday;
-            app.clock.wDay = timeinfo.tm_wday;
-            app.clock.month = timeinfo.tm_mon + 1;
-            app.clock.year = 1900+timeinfo.tm_year;
-            // MPRINT("Current time:")
-            // MPRINT(String(app.clock.h)+":"+String(app.clock.m))
+        // Now we take the time from the RTC
+        flushTime();
+
+        app.clock.h = RTCtime.Hours;
+        app.clock.m = RTCtime.Minutes;
+        app.clock.mDay = RTCDate.Date;
+        app.clock.wDay = RTCDate.WeekDay;
+        app.clock.month = RTCDate.Month;
+        app.clock.year = RTCDate.Year;
+
+        if(RTCtime.Seconds == 0){
+            app.flags.updateDisplay = 1;
         }
     }
 }
@@ -167,6 +203,7 @@ void alarm_init(void){
 
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     printLocalTime();
+    setupTimeRTC();
 }
 
 void alarm_start(void){

@@ -14,4 +14,4 @@ Changed GUI on the display to visualize the data and current time.
 
 Possible to be used as an alarm clock if alarm set on the cloud.
 
-At the moment, it does not work if there is no internet connection, need to add RTC for offline clock.
+RTC now configured and synced with the cloud at midnight

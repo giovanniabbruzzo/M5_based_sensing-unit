@@ -26,14 +26,14 @@ void setup() {
   SERIAL_INIT
   M5.begin(true, true, false, false);
   display_init();
-  setCpuFrequencyMhz(240);
+  setCpuFrequencyMhz(160);
   MPRINT("Starting initialisation process")
  
   display_println("Trying to connect to the WiFi...");
   wdt_config_hal(WDT_VERY_LONG_TIMEOUT);
   app_init();
   timer_init();
-  if(wifi_hal_handle_connect("TEMP_AP","temp_01234")){
+  if(wifi_hal_handle_connect("TEMP_AP","")){
     app.WiFiOnline = ONLINE;
     app.WiFiMacAddress = String(WiFi.macAddress());
     app.WiFiLocalIP = WiFi.localIP().toString();

@@ -8,113 +8,96 @@
  * @copyright Copyright (c) 2021
  * 
  */
+#include <M5Core2.h>
 #include "touch_buttons.h"
 #include "debug_utils.h"
-#include "includes.h"
 
-touch_buttons_t bttns;
 extern app_t app;
 
 void buttons_init(void){
-    bttns.state = TB_RELEASED;
-    bttns.process = 0;
-    bttns.pressedTime = 0;
+    M5.BtnA.longPressTime = TOUCH_BUTTON_LONG_PRESS_DEBOUNCE_TIME_MS;
+    M5.BtnB.longPressTime = TOUCH_BUTTON_LONG_PRESS_DEBOUNCE_TIME_MS;
+    M5.BtnC.longPressTime = TOUCH_BUTTON_LONG_PRESS_DEBOUNCE_TIME_MS;
+
+    M5.BtnA.addHandler(button_touch,E_TOUCH);
+    M5.BtnB.addHandler(button_touch,E_TOUCH);
+    M5.BtnC.addHandler(button_touch,E_TOUCH);
+
+    M5.BtnA.addHandler(button_tap,E_PRESSED);
+    M5.BtnB.addHandler(button_tap,E_PRESSED);
+    M5.BtnC.addHandler(button_tap,E_PRESSED);
+
+    M5.BtnA.addHandler(button_double_tap,E_DBLTAP);
+    M5.BtnB.addHandler(button_double_tap,E_DBLTAP);
+    M5.BtnC.addHandler(button_double_tap,E_DBLTAP);
+
+    M5.BtnA.addHandler(button_long_pressed,E_LONGPRESSING);
+    M5.BtnB.addHandler(button_long_pressed,E_LONGPRESSING);
+    M5.BtnC.addHandler(button_long_pressed,E_LONGPRESSING);
 }
 
 void buttons_monitor(void){
-    if(M5.BtnB.wasPressed()) {
-        switch (bttns.state){
-            case TB_RELEASED:
-                bttns.state = TB_ONE_TAP;
-                bttns.pressedTime = millis();
-                if(!app.displayState){
-                    app.flags.setDisplayOn = 1;
-                }
-                // Enable haptic
-                app.timers.hapticTriggered = millis();
-                app.flags.haptFlag = 1;
-                DEBUG_PRINT("One tap")
-                break;
-            case TB_ONE_TAP:
-                if((millis() - bttns.pressedTime) <= TOUCH_BUTOON_DOUBLE_TAP_DEBOUNCE_TIME_MS){
-                    bttns.state = TB_DOUBLE_TAP;
-                    DEBUG_PRINT("Double tap detected")
-                    // Enable haptic
-                    app.timers.hapticTriggered = millis();
-                    app.flags.haptFlag = 1;
-                    bttns.pressedTime = 0;
-                    if(app.displayState){
-                        app.flags.setDisplayOff = 1;
-                    }
-                }
-                else{
-                    bttns.state = TB_RELEASED;
-                    bttns.pressedTime = 0;
-                    DEBUG_PRINT("Double tap ignored")
-                }
-                break;
-            case TB_DOUBLE_TAP:
-                DEBUG_PRINT("Triple tap ignored")
-                bttns.state = TB_RELEASED;
-                bttns.pressedTime = 0;
-                break;
-            case TB_LONG_PRESSED:
-                bttns.state = TB_RELEASED;
-                bttns.pressedTime = 0;
-                break;
-            default:
-                DEBUG_PRINT("Error")
-                break;
-        }
-    }
-    else if(M5.BtnB.isReleased()){
-        if(bttns.state != TB_RELEASED){
-            if((millis() - bttns.pressedTime) > TOUCH_BUTOON_DOUBLE_TAP_DEBOUNCE_TIME_MS){
-                bttns.state = TB_RELEASED;
-                bttns.pressedTime = 0;
-            }   
-        }
-    }
-    else{
-        switch (bttns.state){
-            case TB_RELEASED:
-                break;
-            case TB_ONE_TAP:
-                if((millis() - bttns.pressedTime) > TOUCH_BUTOON_RELEASE_DEBOUNCE_TIME_MS){
-                    bttns.state = TB_LONG_PRESSED;
-                }
-                break;
-            case TB_DOUBLE_TAP:
-                break;
-            case TB_LONG_PRESSED:
-                if(M5.BtnB.pressedFor(TOUCH_BUTOON_LONG_PRESS_DEBOUNCE_TIME_MS)){
-                    DEBUG_PRINT("Long tap detected")
-                    bttns.process = 1;
-                    bttns.state = TB_RELEASED;
-                    // Enable haptic
-                    app.timers.hapticTriggered = millis();
-                    app.flags.haptFlag = 1;
-                }
-                break;
-            default:
-                DEBUG_PRINT("Error")
-                break;
-        }
-    }
-    if (M5.BtnA.wasPressed()){
-        MPRINT("Trigger alarm")
-        app.alarm.flags.ring = 1;
-    }
-    if (M5.BtnC.wasPressed()){
-        MPRINT("Snooze alarm")
-        app.alarm.flags.snooze = 0;
-    }        
+    M5.update();
 }
 
-void buttons_process(void){
-    if(bttns.process){
-        bttns.process = 0;
-        DEBUG_PRINT("Long press button recorded")
-        app.alarm.flags.stop = 1;
+void button_tap(Event& e){
+    if(e.button->getName() == M5.BtnA.getName()){
+        MPRINT("Button A - Single Tap");
+        app.alarm.flags.ring = 1;
+    }else if(e.button->getName() == M5.BtnB.getName()){
+        MPRINT("Button B - Single Tap");
+        if(!app.displayState){
+            app.flags.setDisplayOn = 1;
+        }
+    }else if(e.button->getName() == M5.BtnC.getName()){
+        MPRINT("Button C - Single Tap");
+        app.alarm.flags.snooze = 0;
     }
+}
+
+void button_double_tap(Event& e){
+    button_haptics(150);
+    if(e.button->getName() == M5.BtnA.getName()){
+        MPRINT("Button A - Double Tap");
+    }else if(e.button->getName() == M5.BtnB.getName()){
+        MPRINT("Button B - Double Tap");
+        if(app.displayState){
+            MPRINT("Request to turn off display");
+            app.flags.setDisplayOff = 1;
+            app.flags.setDisplayOn = 0;
+
+        }
+    }else if(e.button->getName() == M5.BtnC.getName()){
+        MPRINT("Button C - Double Tap");
+    }
+}
+
+void button_long_pressed(Event& e){
+    button_haptics(200);
+    if(e.button->getName() == M5.BtnA.getName()){
+        MPRINT("Button A - Long Tap");
+    }else if(e.button->getName() == M5.BtnB.getName()){
+        MPRINT("Button B - Long Tap");
+        app.alarm.flags.stop = 1;
+    }else if(e.button->getName() == M5.BtnC.getName()){
+        MPRINT("Button C - Long Tap");
+    }
+}
+
+void button_touch(Event& e){
+    button_haptics(100);
+    if(e.button->getName() == M5.BtnA.getName()){
+        MPRINT("Button A - Touch Tap");
+    }else if(e.button->getName() == M5.BtnB.getName()){
+        MPRINT("Button B - Touch Tap");
+    }else if(e.button->getName() == M5.BtnC.getName()){
+        MPRINT("Button C - Touch Tap");
+    }
+}
+
+void button_haptics(uint16_t time_ms){
+    if(time_ms > 250) time_ms = 250;
+    M5.Axp.SetLDOEnable(3,true);
+    delay(time_ms);
+    M5.Axp.SetLDOEnable(3,false);
 }

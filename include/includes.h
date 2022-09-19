@@ -35,8 +35,6 @@
 #include <M5Core2.h>
 #include "display.h"
 #include "touch_buttons.h"
-// Haptics
-#include "haptics.h"
 // Async Server
 #include "webserver.h"
 // Blynk

@@ -143,6 +143,7 @@ void display_monitor(void){
     }
     if(app.flags.setDisplayOff){
         app.flags.setDisplayOff = 0;
+        app.flags.setDisplayOn = 0;
         M5.Lcd.sleep();
         M5.Lcd.setBrightness(0);
         app.displayState = 0;

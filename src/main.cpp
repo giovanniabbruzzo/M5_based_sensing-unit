@@ -50,6 +50,7 @@ void setup() {
   // Init BME sensor
   bme_init();
   eeprom_init();
+  buttons_init();
   MPRINT("BME init completed")
   if(app.WiFiOnline == ONLINE){
     app_ota_init();
@@ -85,9 +86,6 @@ void loop() {
   display_process();
 
   buttons_monitor();
-  buttons_process();
-
-  haptics_process();
 
   alarm_process();
 

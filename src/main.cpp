@@ -54,15 +54,15 @@ void setup() {
   MPRINT("BME init completed")
   if(app.WiFiOnline == ONLINE){
     app_ota_init();
-    server_init();
+    webserver_init();
     MPRINT("Server init completed")
 
     // Setup alarm
     alarm_init();
     MPRINT("Alarm setup completed")
 
-    // Init Blynk
-    blynk_init();
+    // // Init Blynk
+    // blynk_init();
   }
   
   // Leave the WDT at the end
@@ -80,7 +80,7 @@ void loop() {
   timer_process(); 
 
   app_loop();
-  blynk_loop();
+  // blynk_loop();
   
   display_monitor();
   display_process();

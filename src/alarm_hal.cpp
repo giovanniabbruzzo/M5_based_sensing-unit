@@ -18,8 +18,8 @@ extern app_t app;
 #define OUTPUT_GAIN 300
 
 const char* ntpServer = "europe.pool.ntp.org";
-const long  gmtOffset_sec = 0;
-const int   daylightOffset_sec = 3600;
+const long  gmtOffset_sec = 3600;
+const int   daylightOffset_sec = 0;
 
 unsigned long int timeUpdated = millis();
 

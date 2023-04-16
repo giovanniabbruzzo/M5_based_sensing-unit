@@ -5,7 +5,6 @@
 #include "AudioFileSourceID3.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2S.h"
-#include "debug_utils.h"
 #include "time.h"
 
 AudioGeneratorMP3 *mp3;
@@ -35,8 +34,8 @@ uint8_t setupTimeRTC(){
         app.clock.wDay = timeinfo.tm_wday;
         app.clock.month = timeinfo.tm_mon + 1;
         app.clock.year = 1900+timeinfo.tm_year;
-        // MPRINT("Current time:")
-        // MPRINT(String(app.clock.h)+":"+String(app.clock.m))
+        // PRINT("Current time:")
+        // PRINT(String(app.clock.h)+":"+String(app.clock.m))
         RTCtime.Hours = app.clock.h; //Set the time
         RTCtime.Minutes = app.clock.m;
         RTCtime.Seconds = timeinfo.tm_sec;
@@ -67,7 +66,7 @@ char* strToChar(String str) {
 void printLocalTime(){  
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){ 
-    MPRINT("Failed to obtain time");
+    PRINT("Failed to obtain time");
     return;
   }
   Serial.println(&timeinfo, "%A, %B %d \n%Y %H:%M:%S");  //Screen prints date and time.  屏幕打印日期和时间
@@ -232,7 +231,7 @@ uint8_t alarm_do_ring(void){
     if(((app.clock.h == app.alarm.alarmClock.h) && (app.clock.m == app.alarm.alarmClock.m) && !app.alarm.flags.triggered)){
         app.alarm.flags.triggered = 1;
         app.alarm.triggereTime = millis();
-        MPRINT("Trigger alarm")
+        PRINT("Trigger alarm")
         return 1;
     }else if(app.alarm.flags.triggered){
         if((millis() - app.alarm.triggereTime) > 61000){

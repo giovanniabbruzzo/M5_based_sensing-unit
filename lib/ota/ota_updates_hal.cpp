@@ -10,7 +10,6 @@
  */
 #include "ota_updates_hal.h"
 #include <HTTPUpdate.h>
-#include "debug_utils.h"
 
 String ota_get_chip_id(void){
   String ChipIdHex = String((uint32_t)(ESP.getEfuseMac() >> 32), HEX);
@@ -28,13 +27,13 @@ void ota_do_update(void){
 
     switch (ret){
     case HTTP_UPDATE_FAILED:
-        MPRINT("Update failed");
+        PRINT("Update failed");
         break;
     case HTTP_UPDATE_NO_UPDATES:
-        MPRINT("No updates available");
+        PRINT("No updates available");
         break;
     case HTTP_UPDATE_OK:
-        MPRINT("Update went ok");
+        PRINT("Update went ok");
         break;
     
     default:

@@ -10,7 +10,6 @@
  */
 #include <M5Core2.h>
 #include "touch_buttons.h"
-#include "debug_utils.h"
 
 extern app_t app;
 
@@ -42,15 +41,15 @@ void buttons_monitor(void){
 
 void button_tap(Event& e){
     if(e.button->getName() == M5.BtnA.getName()){
-        MPRINT("Button A - Single Tap");
+        PRINT("Button A - Single Tap");
         app.alarm.flags.ring = 1;
     }else if(e.button->getName() == M5.BtnB.getName()){
-        MPRINT("Button B - Single Tap");
+        PRINT("Button B - Single Tap");
         if(!app.displayState){
             app.flags.setDisplayOn = 1;
         }
     }else if(e.button->getName() == M5.BtnC.getName()){
-        MPRINT("Button C - Single Tap");
+        PRINT("Button C - Single Tap");
         app.alarm.flags.snooze = 0;
     }
 }
@@ -58,40 +57,40 @@ void button_tap(Event& e){
 void button_double_tap(Event& e){
     button_haptics(150);
     if(e.button->getName() == M5.BtnA.getName()){
-        MPRINT("Button A - Double Tap");
+        PRINT("Button A - Double Tap");
     }else if(e.button->getName() == M5.BtnB.getName()){
-        MPRINT("Button B - Double Tap");
+        PRINT("Button B - Double Tap");
         if(app.displayState){
-            MPRINT("Request to turn off display");
+            PRINT("Request to turn off display");
             app.flags.setDisplayOff = 1;
             app.flags.setDisplayOn = 0;
 
         }
     }else if(e.button->getName() == M5.BtnC.getName()){
-        MPRINT("Button C - Double Tap");
+        PRINT("Button C - Double Tap");
     }
 }
 
 void button_long_pressed(Event& e){
     button_haptics(200);
     if(e.button->getName() == M5.BtnA.getName()){
-        MPRINT("Button A - Long Tap");
+        PRINT("Button A - Long Tap");
     }else if(e.button->getName() == M5.BtnB.getName()){
-        MPRINT("Button B - Long Tap");
+        PRINT("Button B - Long Tap");
         app.alarm.flags.stop = 1;
     }else if(e.button->getName() == M5.BtnC.getName()){
-        MPRINT("Button C - Long Tap");
+        PRINT("Button C - Long Tap");
     }
 }
 
 void button_touch(Event& e){
     button_haptics(100);
     if(e.button->getName() == M5.BtnA.getName()){
-        MPRINT("Button A - Touch Tap");
+        PRINT("Button A - Touch Tap");
     }else if(e.button->getName() == M5.BtnB.getName()){
-        MPRINT("Button B - Touch Tap");
+        PRINT("Button B - Touch Tap");
     }else if(e.button->getName() == M5.BtnC.getName()){
-        MPRINT("Button C - Touch Tap");
+        PRINT("Button C - Touch Tap");
     }
 }
 

@@ -25,9 +25,9 @@
 
 // To handle all the definitions needed for debug printing, we need to delay
 // macro definitions till later.
-#define DEBUG_SKIP__DEBUG_PRINT_MACROS 1
+#define DEBUG_SKIP__PRINT_DEBUG_INFO_MACROS 1
 #include <async_config.h>
-#undef DEBUG_SKIP__DEBUG_PRINT_MACROS
+#undef DEBUG_SKIP__PRINT_DEBUG_INFO_MACROS
 
 #if ASYNC_TCP_SSL_ENABLED
 

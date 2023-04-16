@@ -27,7 +27,7 @@ void setup() {
   M5.begin(true, true, false, false);
   display_init();
   setCpuFrequencyMhz(160);
-  MPRINT("Starting initialisation process")
+  PRINT("Starting initialisation process")
  
   display_println("Trying to connect to the WiFi...");
   wdt_config_hal(WDT_VERY_LONG_TIMEOUT);
@@ -37,33 +37,32 @@ void setup() {
     app.WiFiOnline = ONLINE;
     app.WiFiMacAddress = String(WiFi.macAddress());
     app.WiFiLocalIP = WiFi.localIP().toString();
-    MPRINT("Connected")
-    MPRINT("My MAC is: "+app.WiFiMacAddress+", my IP: "+app.WiFiLocalIP)
+    PRINT("Connected")
+    PRINT("My MAC is: "+app.WiFiMacAddress+", my IP: "+app.WiFiLocalIP)
     display_println("Connected to WiFI, initializing the rest of the sensors...");
   }else{
     app.WiFiOnline = OFFLINE;
-    MPRINT("Not connected")
+    PRINT("Not connected")
     display_println("Couldn't connect to WiFI, initializing the rest of the sensors...");
   }
   // ... until here
-  MPRINT("M5 stack init completed")
+  PRINT("M5 stack init completed")
   // Init BME sensor
   bme_init();
   eeprom_init();
   buttons_init();
-  MPRINT("BME init completed")
+  PRINT("BME init completed")
   if(app.WiFiOnline == ONLINE){
     app_ota_init();
     webserver_init();
-    MPRINT("Server init completed")
+    PRINT("Server init completed")
 
     // Setup alarm
     alarm_init();
-    MPRINT("Alarm setup completed")
-
-    // // Init Blynk
-    // blynk_init();
+    PRINT("Alarm setup completed")
   }
+
+  mqtt_init();
   
   // Leave the WDT at the end
   wdt_config_hal(WDT_SHORT_TIMEOUT);
@@ -80,7 +79,7 @@ void loop() {
   timer_process(); 
 
   app_loop();
-  // blynk_loop();
+  mqtt_loop();
   
   display_monitor();
   display_process();
@@ -113,5 +112,9 @@ void loop() {
       app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
       app.flags.setDisplayOff = 1;
     }
+  }
+  if(!app.timers.mqttSendTimer){
+    app.timers.mqttSendTimer = MQTT_SEND_PERIOD_MS;
+    mqtt_send();
   }
 }

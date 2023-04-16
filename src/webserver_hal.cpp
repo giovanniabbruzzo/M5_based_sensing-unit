@@ -2,7 +2,6 @@
 #include "ESPAsyncWebServer.h"
 #include <ESPmDNS.h>
 #include "defs.h"
-#include "debug_utils.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer webserver_hal(80);
@@ -191,10 +190,10 @@ void webserver_init(void){
   // Give it a local mDNS name
   const char *serverName = "m5Homeserver";
   if(!MDNS.begin(serverName)) {
-     MPRINT("Error starting mDNS");
+     PRINT("Error starting mDNS");
   }
   else{
-    MPRINT("New server starting at: "+String(serverName)+".local")
+    PRINT("New server starting at: "+String(serverName)+".local")
   }
   // Start server
   webserver_hal.begin();

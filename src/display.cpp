@@ -9,7 +9,6 @@
  * 
  */
 #include "display.h"
-#include "debug_utils.h"
 #include "alarm_hal.h"
 
 extern app_t app;
@@ -28,7 +27,7 @@ void display_init(void){
     disp.setCursor(0, 0);
     disp.pushSprite(0, 0);
 
-    MPRINT("Display width: "+String(disp.width())+", display height: "+String(disp.height()))
+    PRINT("Display width: "+String(disp.width())+", display height: "+String(disp.height()))
 }
 
 /**
@@ -61,7 +60,7 @@ void display_process(void){
             app.flags.setDisplayOff = 1;
             return;
         }
-        MPRINT("Processing display...")
+        PRINT("Processing display...")
         app.flags.updateDisplay = 0;
         // Clear
         disp.fillRect(0,0,disp.width(),disp.height(),BG_COLOR1);

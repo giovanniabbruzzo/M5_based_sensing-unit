@@ -9,8 +9,8 @@
  * 
  */
 #include "bme680_hal.h"
-#include "debug_utils.h"
 #include <M5Core2.h>
+#include "defs.h"
 
 TwoWire I2CBME = TwoWire(1);
 Adafruit_BME680 bme;
@@ -22,7 +22,7 @@ Adafruit_BME680 bme;
 void bme_init(void){
     I2CBME.begin(BME_I2C_SDA, BME_I2C_SCL, BME_I2C_FREQ);
     if (!bme.begin(0x76,&I2CBME)){
-        DEBUG_PRINT("Could not find a valid BME680 sensor, check wiring!")
+        PRINT_DEBUG_INFO("Could not find a valid BME680 sensor, check wiring!")
     }
     
     // Set up oversampling and filter initialization
@@ -51,7 +51,7 @@ void bme_init_reading(void){
         return;
     }
 
-    MPRINT("Reading started at "+String(millis())+" and will finish at "+String(endTime))
+    PRINT("Reading started at "+String(millis())+" and will finish at "+String(endTime))
 }
 
 /**
@@ -60,7 +60,7 @@ void bme_init_reading(void){
  */
 void bme_read_data(void){
     if (!bme.endReading()) {
-        MPRINT("Failed to complete reading :(")
+        PRINT("Failed to complete reading :(")
         return;
     }
 
@@ -71,12 +71,11 @@ void bme_read_data(void){
     app.aq.alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
     app.flags.updateDisplay = 1;
-    app.flags.updateBlynk = 1;
 
-    MPRINT("Temperature = "+String(app.aq.temp)+" *C")
-    MPRINT("Pressure = "+String(app.aq.press)+" hPa")
-    MPRINT("Humidity = "+String(app.aq.hum)+" %")
-    MPRINT("Gas = "+String(app.aq.gas_res)+" KOhms")
-    MPRINT("Approx. Altitude = "+String(app.aq.alt)+" m")
+    PRINT("Temperature = "+String(app.aq.temp)+" *C")
+    PRINT("Pressure = "+String(app.aq.press)+" hPa")
+    PRINT("Humidity = "+String(app.aq.hum)+" %")
+    PRINT("Gas = "+String(app.aq.gas_res)+" KOhms")
+    PRINT("Approx. Altitude = "+String(app.aq.alt)+" m")
 
 }

@@ -18,7 +18,37 @@
 #define OTA
 // #define MATH
 
-#define FIRMWARE_VERSION "1.0.0.0"
+#define FW_VERSION_MAJOR 0
+#define FW_VERSION_MINOR 1
+#define FW_VERSION_PATCH 1
+
+#define SERIAL_DEBUG
+
+#ifdef SERIAL_DEBUG
+#define SERIAL_INIT Serial.begin(115200);
+#define PRINT_DEBUG_INFO(str)    \
+    Serial.print(millis());     \
+    Serial.print(": ");    \
+    Serial.print(__PRETTY_FUNCTION__); \
+    Serial.print(' ');      \
+    Serial.print(__FILE__);     \
+    Serial.print(':');      \
+    Serial.print(__LINE__);     \
+    Serial.print(' ');      \
+    Serial.print("\"");      \
+    Serial.print(str);    \
+    Serial.println("\"");
+#define PRINTLN(x) Serial.println(x);
+#define PRINT(x) Serial.print(x);
+#define PRINTF(...) Serial.printf(__VA_ARGS__);
+#else
+#define SERIAL_INIT 
+#define PRINT_DEBUG_INFO(str) 
+#define PRINTLN(x)
+#define PRINT(x)
+#define PRINTF(...)
+#endif
+
 #define OTA_PRODUCT_KEY ""
 
 // Uncomment if you don't want the print functionalities
@@ -33,6 +63,7 @@
 #define TOUCH_BUTTON_LONG_PRESS_DEBOUNCE_TIME_MS 3000
 
 #define DISPLAY_OFF_TIMEOUT_TIME_MS 5*60*1000
+#define MQTT_SEND_PERIOD_MS 60*1000
 
 // Define all the enums structures
 typedef enum{
@@ -48,13 +79,13 @@ struct timers_t {
 	volatile uint64_t generalTestTimer;
 	volatile uint64_t bmeReadingTimer;
 	volatile uint64_t displayOffTimer;
+	volatile uint64_t mqttSendTimer;
 };
 
 typedef union {
     uint8_t val;
     struct {
-        uint8_t updateDisplay : 1;
-		uint8_t updateBlynk :1;
+        uint8_t updateDisplay : 2;
 		uint8_t launchOTA : 1;
 		uint8_t setDisplayOff : 1;
 		uint8_t setDisplayOn : 1;
@@ -109,7 +140,7 @@ struct app_t {
 	String WiFiMacAddress;
 	String WiFiLocalIP;
 	// Timers
-	timers_t timers;
+	volatile timers_t timers;
 	// Air quality sensor
 	air_quality_t aq;
 	// Display

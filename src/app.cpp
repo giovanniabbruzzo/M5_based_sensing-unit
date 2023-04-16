@@ -10,7 +10,6 @@
  */
 #include "app.h"
 #include "includes.h"
-#include "debug_utils.h"
 
 app_t app;
 
@@ -54,21 +53,21 @@ void app_ota_init(void){
         type = "filesystem";
 
       // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-      MPRINT("Start updating " + type);
+      PRINT("Start updating " + type);
     })
     .onEnd([]() {
-      MPRINT("\nEnd");
+      PRINT("\nEnd");
     })
     .onProgress([](unsigned int progress, unsigned int total) {
       Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
     })
     .onError([](ota_error_t error) {
       Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) MPRINT("Auth Failed")
-      else if (error == OTA_BEGIN_ERROR) MPRINT("Begin Failed")
-      else if (error == OTA_CONNECT_ERROR) MPRINT("Connect Failed")
-      else if (error == OTA_RECEIVE_ERROR) MPRINT("Receive Failed")
-      else if (error == OTA_END_ERROR) MPRINT("End Failed")
+      if (error == OTA_AUTH_ERROR) PRINT("Auth Failed")
+      else if (error == OTA_BEGIN_ERROR) PRINT("Begin Failed")
+      else if (error == OTA_CONNECT_ERROR) PRINT("Connect Failed")
+      else if (error == OTA_RECEIVE_ERROR) PRINT("Receive Failed")
+      else if (error == OTA_END_ERROR) PRINT("End Failed")
     });
 
   ArduinoOTA.begin();
@@ -88,7 +87,7 @@ void app_loop(void){
   }
   if(app.flags.readBME){
     app.flags.readBME = 0;
-    MPRINT("Reading BME...")
+    PRINT("Reading BME...")
     bme_read_data();
   }
 }   

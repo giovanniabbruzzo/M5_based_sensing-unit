@@ -36,6 +36,7 @@ void timer_init(void){
   app.timers.bmeReadingTimer = BME_POLLING_PERIOD_MS;
   // Display off
   app.timers.displayOffTimer = DISPLAY_OFF_TIMEOUT_TIME_MS;
+  app.timers.mqttSendTimer = MQTT_SEND_PERIOD_MS;
 }
 
 /**
@@ -59,6 +60,9 @@ void timer_monitor(void){
     }
     if(app.timers.displayOffTimer){
       app.timers.displayOffTimer--;
+    }
+    if(app.timers.mqttSendTimer){
+      app.timers.mqttSendTimer--;
     }
 
     portEXIT_CRITICAL(&timerMux);

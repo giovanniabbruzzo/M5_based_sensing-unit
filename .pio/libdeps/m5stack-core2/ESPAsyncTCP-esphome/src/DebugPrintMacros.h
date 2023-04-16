@@ -1,5 +1,5 @@
-#ifndef _DEBUG_PRINT_MACROS_H
-#define _DEBUG_PRINT_MACROS_H
+#ifndef _PRINT_DEBUG_INFO_MACROS_H
+#define _PRINT_DEBUG_INFO_MACROS_H
 // Some customizable print macros to suite the debug needs de jour.
 
 // Debug macros
@@ -109,4 +109,4 @@ inline struct _DEBUG_TIME_STAMP debugTimeStamp(void) {
 #define TCP_SSL_DEBUG( format, ...) DEBUG_GENERIC_F("[TCP_SSL]", format, ##__VA_ARGS__)
 #endif
 
-#endif //_DEBUG_PRINT_MACROS_H
+#endif //_PRINT_DEBUG_INFO_MACROS_H

@@ -7,7 +7,7 @@ You can use the WiFi manager to connect to the WiFi and then use the addresss to
 
 Creates a local web server where it's possible to see the data.
 
-Connects to blynk cloud to show the data. From Blynk is now possible to set an alarm.
+Connects to home PI via MQTT.
 
 Changed GUI on the display to visualize the data and current time.
 ![GUI img](/images/gui.jpg "GUI")

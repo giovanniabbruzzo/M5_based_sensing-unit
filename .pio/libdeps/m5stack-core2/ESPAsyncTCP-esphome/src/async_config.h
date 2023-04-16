@@ -23,7 +23,7 @@
 // #define DEBUG_ESP_ASYNC_TCP 1
 // #define DEBUG_ESP_TCP_SSL 1
 
-#ifndef DEBUG_SKIP__DEBUG_PRINT_MACROS
+#ifndef DEBUG_SKIP__PRINT_DEBUG_INFO_MACROS
 
 #include <DebugPrintMacros.h>
 

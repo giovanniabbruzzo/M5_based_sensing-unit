@@ -15,7 +15,6 @@
 
 // Includes
 #include "defs.h"
-#include "debug_utils.h"
 #include "timer_hal.h" // Timer
 #include "esp_wdt_hal.h" // WDT
 #include "app.h"
@@ -37,11 +36,11 @@
 #include "touch_buttons.h"
 // Async Server
 #include "webserver_hal.h"
-// // Blynk
-// #include "blynk_hal.h"
 // Alarm
 #include "alarm_hal.h"
 // EEPROM
 #include "eeprom_hal.h"
+// MQTT
+#include "mqtt_hal.h"
 
 #endif // INCLUDES_H
